@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}My Reviews{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>My Reviews</h2>
+        
+        {% if reviews %}
+        <div class="row">
+            {% for review in reviews %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ review.product.name }}</h5>
+                        <div class="mb-2">
+                            {% for i in range(5) %}
+                                {% if i < review.rating %}
+                                    <span class="text-warning">★</span>
+                                {% else %}
+                                    <span class="text-muted">★</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="ms-2">({{ review.rating }}/5)</span>
+                        </div>
+                        <p class="card-text">{{ review.comment }}</p>
+                        <small class="text-muted">Reviewed on {{ review.created_at.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <h4>No reviews yet</h4>
+            <p>You haven't written any reviews yet. Purchase products to leave reviews.</p>
+            <a href="{{ url_for('marketplace') }}" class="btn btn-success">Browse Products</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

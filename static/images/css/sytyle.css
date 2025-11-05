@@ -1,0 +1,64 @@
+.hero-section {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Rating Stars */
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.rating-stars input {
+    display: none;
+}
+
+.rating-stars .star-label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-stars input:checked ~ .star-label,
+.rating-stars .star-label:hover,
+.rating-stars .star-label:hover ~ .star-label {
+    color: #ffc107;
+}
+
+.rating-stars input:checked + .star-label {
+    color: #ffc107;
+}
+
+.stars {
+    font-size: 1.2rem;
+}
+
+.rating-display .stars {
+    font-size: 1.1rem;
+}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Order Details #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Order Details #{{ order.id }}</h2>
+            <a href="{{ url_for('farmer_orders') }}" class="btn btn-outline-secondary">Back to Orders</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Order Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order_items %}
+                                    <tr>
+                                        <td>{{ item.product.name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>${{ "%.2f"|format(item.price) }}</td>
+                                        <td>${{ "%.2f"|format(item.quantity * item.price) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Order Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Customer:</strong> {{ order.customer.username }}</p>
+                        <p><strong>Email:</strong> {{ order.customer.email }}</p>
+                        <p><strong>Order Date:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <p><strong>Last Updated:</strong> {{ order.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <p><strong>Total Amount:</strong> ${{ "%.2f"|format(order.total_amount) }}</p>
+                        
+                        <div class="mb-3">
+                            <strong>Current Status:</strong>
+                            <span class="badge 
+                                {% if order.status == 'pending' %}bg-warning
+                                {% elif order.status == 'accepted' %}bg-info
+                                {% elif order.status == 'shipped' %}bg-primary
+                                {% elif order.status == 'delivered' %}bg-success
+                                {% elif order.status == 'cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %} ms-2">
+                                {{ order.status|title }}
+                            </span>
+                        </div>
+
+                        <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}">
+                            <div class="mb-3">
+                                <label for="status" class="form-label"><strong>Update Status:</strong></label>
+                                <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                                    <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="accepted" {% if order.status == 'accepted' %}selected{% endif %}>Accepted</option>
+                                    <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                    <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                    <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

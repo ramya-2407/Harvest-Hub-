@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Contact Us</h2>
+        <p>We'd love to hear from you! Send us a message and we'll respond as soon as possible.</p>
+        
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" rows="5" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <h3>Get in Touch</h3>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">📍 Address</h5>
+                <p class="card-text">
+                    123 Farm Road<br>
+                    Agriculture City, AC 12345<br>
+                    INDIA
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">📞 Phone</h5>
+                <p class="card-text"> 123-4567</p>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">✉️ Email</h5>
+                <p class="card-text">info@farmersmarket.com</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">🕒 Business Hours</h5>
+                <p class="card-text">
+                    Monday - Friday: 9:00 AM - 6:00 PM<br>
+                    Saturday: 10:00 AM - 4:00 PM<br>
+                    Sunday: Closed
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

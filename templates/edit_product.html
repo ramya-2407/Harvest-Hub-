@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="text-center mb-0">Edit Product</h4>
+                    <a href="{{ url_for('my_products') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to Products
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" name="name" class="form-control" value="{{ product.name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="4" required>{{ product.description }}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Price ($)</label>
+                            <input type="number" name="price" class="form-control" step="0.01" min="0" value="{{ product.price }}" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" name="quantity" class="form-control" min="0" value="{{ product.quantity }}" required>
+                            <div class="form-text">
+                                {% if product.quantity == 0 %}
+                                    <span class="text-danger">Out of Stock</span>
+                                {% elif product.quantity < 10 %}
+                                    <span class="text-warning">Low Stock Warning</span>
+                                {% else %}
+                                    <span class="text-success">Good Stock Level</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-select" required>
+                            <option value="">Select Category</option>
+                            <option value="Vegetables" {% if product.category == 'Vegetables' %}selected{% endif %}>Vegetables</option>
+                            <option value="Fruits" {% if product.category == 'Fruits' %}selected{% endif %}>Fruits</option>
+                            <option value="Grains" {% if product.category == 'Grains' %}selected{% endif %}>Grains</option>
+                            <option value="Dairy" {% if product.category == 'Dairy' %}selected{% endif %}>Dairy</option>
+                            <option value="Meat" {% if product.category == 'Meat' %}selected{% endif %}>Meat</option>
+                            <option value="Herbs" {% if product.category == 'Herbs' %}selected{% endif %}>Herbs</option>
+                            <option value="Organic" {% if product.category == 'Organic' %}selected{% endif %}>Organic</option>
+                            <option value="Other" {% if product.category == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">Product Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Created:</strong> {{ product.created_at.strftime('%Y-%m-%d') }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Current Status:</strong> 
+                                        {% if product.quantity == 0 %}
+                                            <span class="badge bg-danger">Out of Stock</span>
+                                        {% elif product.quantity < 10 %}
+                                            <span class="badge bg-warning">Low Stock</span>
+                                        {% else %}
+                                            <span class="badge bg-success">In Stock</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('my_products') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Update Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

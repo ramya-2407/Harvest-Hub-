@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Add Review{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-center">Add Review for {{ product.name }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="rating-stars">
+                            {% for i in range(5, 0, -1) %}
+                            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+                            <label for="star{{ i }}" class="star-label">★</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Comment</label>
+                        <textarea name="comment" class="form-control" rows="5" placeholder="Share your experience with this product..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Submit Review</button>
+                    <a href="{{ url_for('product_details', product_id=product.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.rating-stars input {
+    display: none;
+}
+
+.rating-stars .star-label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-stars input:checked ~ .star-label,
+.rating-stars .star-label:hover,
+.rating-stars .star-label:hover ~ .star-label {
+    color: #ffc107;
+}
+
+.rating-stars input:checked + .star-label {
+    color: #ffc107;
+}
+</style>
+{% endblock %}

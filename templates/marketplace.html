@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET">
+                    <div class="mb-3">
+                        <label class="form-label">Search</label>
+                        <input type="text" name="search" class="form-control" value="{{ request.args.get('search', '') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                            <option value="{{ category }}" {% if request.args.get('category') == category %}selected{% endif %}>
+                                {{ category }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Apply Filters</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <h2>Marketplace</h2>
+        <div class="row">
+            {% for product in products %}
+           <!-- In the product card section of marketplace.html -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description[:100] }}...</p>
+                        <p class="text-success fw-bold">${{ "%.2f"|format(product.price) }}</p>
+                        <p class="text-muted">In stock: {{ product.quantity }}</p>
+                        
+                        <!-- Add rating display -->
+                        <div class="rating-display mb-2">
+                            <div class="stars">
+                                {% for i in range(5) %}
+                                    {% if i < product.avg_rating %}
+                                        <span class="text-warning">★</span>
+                                    {% else %}
+                                        <span class="text-muted">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <small class="text-muted ms-1">
+                                    ({{ product.avg_rating }}) - {{ product.review_count }} reviews
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <p class="text-info">Farmer: {{ product.farmer.username }}</p>
+                        
+                        {% if current_user.is_authenticated and current_user.user_type == 'customer' %}
+                        <div class="input-group mb-2">
+                            <input type="number" class="form-control quantity-input" value="1" min="1" max="{{ product.quantity }}">
+                            <button class="btn btn-success add-to-cart" data-product-id="{{ product.id }}">Add to Cart</button>
+                        </div>
+                        <a href="{{ url_for('product_details', product_id=product.id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

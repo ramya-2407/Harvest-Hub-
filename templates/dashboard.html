@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Dashboard</h2>
+        <p>Welcome, {{ current_user.username }}! ({{ current_user.user_type|title }})</p>
+    </div>
+</div>
+
+{% if current_user.user_type == 'farmer' %}
+<!-- Farmer Dashboard -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Products</h5>
+                <p class="card-text display-4">{{ total_products }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Reviews</h5>
+                <p class="card-text display-4">{{ received_reviews_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h4>Your Products</h4>
+        {% if products %}
+        <div class="row">
+            {% for product in products[:3] %}  <!-- Show only first 3 products -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">Price: ${{ "%.2f"|format(product.price) }}</p>
+                        <p class="card-text">Quantity: {{ product.quantity }}</p>
+                        <a href="{{ url_for('my_products') }}" class="btn btn-sm btn-outline-success">Manage Products</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if products|length > 3 %}
+        <div class="text-center mt-3">
+            <a href="{{ url_for('my_products') }}" class="btn btn-outline-primary">View All Products</a>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-3">
+            <p>No products yet. Start by adding your first product!</p>
+            <a href="{{ url_for('add_product') }}" class="btn btn-success">Add Your First Product</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% else %}
+<!-- Customer Dashboard -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Orders</h5>
+                <p class="card-text display-4">{{ total_orders }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Cart Items</h5>
+                <p class="card-text display-4">{{ cart_items_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h4>Recent Orders</h4>
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders[:5] %}  <!-- Show only recent 5 orders -->
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                        <td>
+                            <span class="badge bg-{% if order.status == 'completed' %}success{% elif order.status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                {{ order.status|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if orders|length > 5 %}
+        <div class="text-center mt-3">
+            <a href="{{ url_for('orders') }}" class="btn btn-outline-primary">View All Orders</a>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-3">
+            <p>No orders yet. Start shopping to see your orders here!</p>
+            <a href="{{ url_for('marketplace') }}" class="btn btn-success">Start Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.user_type == 'farmer' %}
+                <!-- Farmer Quick Actions -->
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('add_product') }}" class="btn btn-success w-100">
+                            <i class="fas fa-plus"></i> Add New Product
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('my_products') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-box"></i> My Products
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('farmer_reviews') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-star"></i> View Reviews
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Customer Quick Actions -->
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('marketplace') }}" class="btn btn-success w-100">
+                            <i class="fas fa-shopping-bag"></i> Browse Products
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('cart') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-shopping-cart"></i> View Cart
+                            {% if cart_items_count > 0 %}
+                            <span class="badge bg-danger ms-1">{{ cart_items_count }}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('orders') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-receipt"></i> My Orders
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.user_type == 'farmer' %}
+                <p>View your latest product reviews and sales activity.</p>
+                <a href="{{ url_for('farmer_reviews') }}" class="btn btn-sm btn-outline-primary">View All Reviews</a>
+                {% else %}
+                <p>Track your recent purchases and shopping activity.</p>
+                <a href="{{ url_for('orders') }}" class="btn btn-sm btn-outline-primary">View Order History</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

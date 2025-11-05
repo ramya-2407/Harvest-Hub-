@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Order Details #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Order Details #{{ order.id }}</h2>
+            <a href="{{ url_for('orders') }}" class="btn btn-outline-secondary">Back to Orders</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Order Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Farmer</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order_items %}
+                                    <tr>
+                                        <td>
+                                            {% if item.product %}
+                                                {{ item.product.name }}
+                                            {% else %}
+                                                Product #{{ item.product_id }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if item.product and item.product.farmer %}
+                                                {{ item.product.farmer.username }}
+                                            {% else %}
+                                                Unknown
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>${{ "%.2f"|format(item.price) }}</td>
+                                        <td>${{ "%.2f"|format(item.quantity * item.price) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                        <td><strong>${{ "%.2f"|format(order.total_amount) }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Order Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Current Status:</strong>
+                            <span class="badge 
+                                {% if order.status == 'pending' %}bg-warning
+                                {% elif order.status == 'accepted' %}bg-info
+                                {% elif order.status == 'shipped' %}bg-primary
+                                {% elif order.status == 'delivered' %}bg-success
+                                {% elif order.status == 'cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %} ms-2">
+                                {{ order.status|title }}
+                            </span>
+                        </div>
+                        
+                        <p><strong>Order Date:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <p><strong>Last Updated:</strong> {{ order.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        
+                        <div class="order-timeline mt-4">
+                            <h6>Order Progress:</h6>
+                            <div class="timeline">
+                                <div class="timeline-item {% if order.status != 'pending' %}completed{% endif %}">
+                                    <span class="timeline-status">Pending</span>
+                                </div>
+                                <div class="timeline-item {% if order.status in ['accepted', 'shipped', 'delivered'] %}completed{% endif %}">
+                                    <span class="timeline-status">Accepted</span>
+                                </div>
+                                <div class="timeline-item {% if order.status in ['shipped', 'delivered'] %}completed{% endif %}">
+                                    <span class="timeline-status">Shipped</span>
+                                </div>
+                                <div class="timeline-item {% if order.status == 'delivered' %}completed{% endif %}">
+                                    <span class="timeline-status">Delivered</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 10px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #dee2e6;
+    z-index: 1;
+}
+
+.timeline-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.timeline-status {
+    background: white;
+    padding: 0 10px;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.timeline-item::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dee2e6;
+    margin-bottom: 5px;
+}
+
+.timeline-item.completed::before {
+    background: #28a745;
+}
+
+.timeline-item.completed .timeline-status {
+    color: #28a745;
+    font-weight: bold;
+}
+</style>
+{% endblock %}
